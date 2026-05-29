@@ -150,14 +150,14 @@
 
 | TC-ID | Type | Feature | Scenario | Input | Expected Result | Actual Result | Pass/Fail |
 |-------|------|---------|----------|-------|----------------|---------------|-----------|
-| TC-001 | Positive | Auth | Login ด้วย credential ถูกต้อง | `{username: "admin", password: "Admin@123"}` | HTTP 200 + JWT Token | | ☐ |
-| TC-002 | Negative | Auth | Login ด้วย password ผิด | `{username: "admin", password: "wrong"}` | HTTP 401 Unauthorized | | ☐ |
-| TC-003 | Security | Auth | เรียก API โดยไม่มี JWT Token | GET /api/orders (no Authorization header) | HTTP 401 Unauthorized | | ☐ |
+| TC-001 | Positive | Auth | Login ด้วย credential ถูกต้อง | `{username: "admin", password: "Admin@123"}` | HTTP 200 + JWT Token |HTTP 200 พร้อมได้รับ Access Token สำเร็จ |✅ |
+| TC-002 | Negative | Auth | Login ด้วย password ผิด | `{username: "admin", password: "wrong"}` | HTTP 401 Unauthorized |HTTP 401 ปฏิเสธการเข้าสู่ระบบตามคาด | ✅ |
+| TC-003 | Security | Auth | เรียก API โดยไม่มี JWT Token | GET /api/orders (no Authorization header) | HTTP 401 Unauthorized |HTTP 401 ป้องกันสิทธิ์บุคคลภายนอกสำเร็จ | ✅|
 | TC-004 | Edge | Payment | ชำระเงินพอดียอด (change = 0) | `{orderId: 1, amount: exactTotal}` | HTTP 200 + change = 0 | | ☐ |
 | TC-005 | Positive |Menu |ดึงข้อมูลเมนูอาหารทั้งหมด | | | | ☐ |
-| TC-006 | Positive |Order |สร้างออเดอร์ใหม่สำเร็จ | | | | ☐ |
-| TC-007 | Negative |Menu |เพิ่มเมนูใหม่แต่ใส่ข้อมูลไม่ครบ | | | | ☐ |
-| TC-008 | Negative | Order|สั่งอาหารในเมนูที่ไม่มีอยู่จริง | | | | ☐ |
+| TC-006 | Positive |Order |สร้างออเดอร์ใหม่สำเร็จ || | | ☐ |
+| TC-007 | Negative |Menu |เพิ่มเมนูใหม่แต่ใส่ข้อมูลไม่ครบ || | | ☐ |
+| TC-008 | Negative | Order|สั่งอาหารในเมนูที่ไม่มีอยู่จริง || | | ☐ |
 | TC-009 | Security |Auth | พนักงานทั่วไป (Staff) พยายามดึงรายงานสรุปยอดขายของร้าน| | | | ☐ |
 | TC-010 | Security |Menu |ทดสอบยิงอักขระพิเศษเพื่อทำ SQL Injection ในช่องค้นหาเมนู | | | | ☐ |
 | TC-011 | Edge |Menu |อัปเดตจำนวนสินค้าในสต็อกจนเหลือ 0 (สินค้าหมด) | | | | ☐ |
@@ -192,7 +192,7 @@
 
 | Variable | ค่าที่ตั้งจริง | ใช้สำหรับ |
 |----------|--------------|-----------|
-| `{{base_url}}` | | Base URL ของ Backend API |
+| `{{base_url}}` |https://restaurant-management-system-exam-2025-8lmw.onrender.com | Base URL ของ Backend API |
 | `{{token}}` | (JWT จาก Login ด้วย Cashier/Waiter) | Request ที่ต้องใช้ Token |
 | `{{admin_token}}` | (JWT จาก Login ด้วย Admin) | Request ที่ต้องการสิทธิ์ Admin |
 
@@ -309,21 +309,21 @@ cd backend && npm audit --audit-level=moderate
 
 | Severity | จำนวน |
 |----------|-------|
-| Critical | |
-| High | |
-| Medium | |
-| Low | |
-| **รวม** | |
+| Critical | 0|
+| High | 0|
+| Medium |0 |
+| Low |0 |
+| **รวม** | 0|
 
 **✏️ กรอกรายละเอียด Dependency ที่มีช่องโหว่ระดับ High ขึ้นไป (ถ้าไม่มีให้ระบุ "ไม่พบช่องโหว่")**
 
 | Package | CVE ID | Severity | เวอร์ชันที่มีปัญหา | เวอร์ชันที่ปลอดภัย | สถานะการแก้ไข |
 |---------|--------|----------|--------------------|--------------------|--------------| 
-| | | | | | |
+|ไม่มีช่องโหว่ | | | | | |
 
 **รูปที่ 5 — ผล npm audit Backend**
 
-`![Backend npm audit](./tests/reports/npm-audit-backend.png)`
+`![alt text](image.png)`
 
 ---
 
@@ -337,19 +337,19 @@ cd frontend && npm audit --audit-level=moderate
 
 | Severity | จำนวน |
 |----------|-------|
-| Critical | |
-| High | |
-| Medium | |
-| Low | |
-| **รวม** | |
+| Critical | 0|
+| High |1 |
+| Medium |2 |
+| Low | 0|
+| **รวม** |3 |
 
 **รูปที่ 6 — ผล npm audit Frontend**
 
-`![Frontend npm audit](./tests/reports/npm-audit-frontend.png)`
+`![alt text](image-1.png)`
 
 ### Security Scan ใน CI Pipeline (Rubric 1.7 ข้อ 4)
 
-**✏️ ยืนยันว่าได้เพิ่ม `npm audit --audit-level=high` ใน `.github/workflows/cicd.yml` แล้ว:** ☐ ใช่
+**✏️ ยืนยันว่าได้เพิ่ม `npm audit --audit-level=high` ใน `.github/workflows/cicd.yml` แล้ว:** ✅ใช่
 
 **รูปที่ 7 — GitHub Actions แสดง npm audit step รันสำเร็จ**
 
