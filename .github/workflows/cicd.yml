@@ -25,6 +25,17 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
+      - name: Security Audit
+        run: npm audit --audit-level=high
+
+      - name: Run Newman E2E Tests
+        run: >
+          npx newman run
+          ./tests/postman/RMS-68030310-TestSuite.postman_collection.json
+          -e ./tests/postman/env.json
+          --reporters cli
+
+
       - name: Run Newman E2E Tests
         run: >
           npx newman run
