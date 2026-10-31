@@ -1,6 +1,6 @@
 # Restaurant Management System (RMS)
 
-> **ข้อสอบปฏิบัติการทดสอบและติดตั้งระบบซอฟต์แวร์เชิงธุรกิจ**  
+> **ข้อสอบปฏิบัติการทดสอบและติดตั้งระบบซอฟต์แวร์เชิงธุรกิจ**
 > รายวิชา: การออกแบบและพัฒนาซอฟต์แวร์ 1
 
 **✏️ กรอกข้อมูลของตนเอง:**
@@ -17,7 +17,7 @@
 
 ระบบจัดการร้านอาหาร (Restaurant Management System: RMS) เป็นระบบสำหรับจัดการเมนู การรับออเดอร์ การชำระเงิน และรายงานยอดขาย
 
-**Source Repository:** `https://github.com/surachai-p/Restaurant-Management-System-Exam-2025.git`  
+**Source Repository:** `https://github.com/surachai-p/Restaurant-Management-System-Exam-2025.git`
 **✏️ Student Repository:** `https://github.com/[แทนที่ด้วยรหัสนักศึกษาของตนเอง]/Restaurant-Management-System-Exam-2025.git`
 
 ---
@@ -129,7 +129,7 @@
 
 ### 1.5 ความเสี่ยงเชิงธุรกิจ (Business Risk)
 
-> **✏️ ระบุ Feature ของระบบ RMS ที่หากเกิดความผิดพลาดแล้วจะกระทบการดำเนินธุรกิจ อย่างน้อย 2 รายการ**  
+> **✏️ ระบุ Feature ของระบบ RMS ที่หากเกิดความผิดพลาดแล้วจะกระทบการดำเนินธุรกิจ อย่างน้อย 2 รายการ**
 > ระดับความเสี่ยง: `Critical` / `High` / `Medium` / `Low`
 
 | # | Feature ที่มีความเสี่ยง | ผลกระทบหากเกิดความผิดพลาด | ระดับความเสี่ยง |
@@ -153,16 +153,16 @@
 | TC-001 | Positive | Auth | Login ด้วย credential ถูกต้อง | `{username: "admin", password: "Admin@123"}` | HTTP 200 + JWT Token |HTTP 200 พร้อมได้รับ Access Token สำเร็จ |✅ |
 | TC-002 | Negative | Auth | Login ด้วย password ผิด | `{username: "admin", password: "wrong"}` | HTTP 401 Unauthorized |HTTP 401 ปฏิเสธการเข้าสู่ระบบตามคาด | ✅ |
 | TC-003 | Security | Auth | เรียก API โดยไม่มี JWT Token | GET /api/orders (no Authorization header) | HTTP 401 Unauthorized |HTTP 401 ป้องกันสิทธิ์บุคคลภายนอกสำเร็จ | ✅|
-| TC-004 | Edge | Payment | ชำระเงินพอดียอด (change = 0) | `{orderId: 1, amount: exactTotal}` | HTTP 200 + change = 0 | | ☐ |
-| TC-005 | Positive |Menu |ดึงข้อมูลเมนูอาหารทั้งหมด | | | | ☐ |
-| TC-006 | Positive |Order |สร้างออเดอร์ใหม่สำเร็จ || | | ☐ |
-| TC-007 | Negative |Menu |เพิ่มเมนูใหม่แต่ใส่ข้อมูลไม่ครบ || | | ☐ |
-| TC-008 | Negative | Order|สั่งอาหารในเมนูที่ไม่มีอยู่จริง || | | ☐ |
-| TC-009 | Security |Auth | พนักงานทั่วไป (Staff) พยายามดึงรายงานสรุปยอดขายของร้าน| | | | ☐ |
-| TC-010 | Security |Menu |ทดสอบยิงอักขระพิเศษเพื่อทำ SQL Injection ในช่องค้นหาเมนู | | | | ☐ |
-| TC-011 | Edge |Menu |อัปเดตจำนวนสินค้าในสต็อกจนเหลือ 0 (สินค้าหมด) | | | | ☐ |
+| TC-004 | Edge | Payment | ชำระเงินพอดียอด (change = 0) | `{orderId: 1, amount: exactTotal}` | HTTP 200 + change = 0 | HTTP 200 คำนวณเงินทอนเท่ากับ 0 ถ่ายโอนสถานะสำเร็จ| ✅|
+| TC-005 | Positive |Menu |ดึงข้อมูลเมนูอาหารทั้งหมด |GET /api/menus |HTTP 200 + รายการเมนูทั้งหมด | HTTP 200 ส่งคืนรายการเมนูอาหารพร้อมรายละเอียดครบถ้วน| ✅|
+| TC-006 | Positive |Order |สร้างออเดอร์ใหม่สำเร็จ |POST /api/orders พร้อมรายการสินค้า| HTTP 201 Created + Order ID| HTTP 201 บันทึกออเดอร์ลงระบบเรียบร้อย| ✅ |
+| TC-007 | Negative |Menu |เพิ่มเมนูใหม่แต่ใส่ข้อมูลไม่ครบ |{name: "Pad Thai"} (ขาด price/category)|HTTP 400 Bad Request | HTTP 400 แจ้งเตือนข้อมูลไม่ครบถ้วน| ✅ |
+| TC-008 | Negative | Order|สั่งอาหารในเมนูที่ไม่มีอยู่จริง |POST /api/orders ด้วย menuId: 99999|HTTP 404 Not Found / 400 Bad Request | HTTP 400/404 ตอบกลับว่าไม่พบเมนูดังกล่าว| ✅ |
+| TC-009 | Security |Auth | พนักงานทั่วไป (Staff) พยายามดึงรายงานสรุปยอดขายของร้าน|GET /api/reports/sales (ด้วย Staff Token) | HTTP 403 Forbidden| HTTP 403 ไม่อนุญาตให้สิทธิ์ Staff เข้าถึงรายงาน|✅ |
+| TC-010 | Security |Menu |ทดสอบยิงอักขระพิเศษเพื่อทำ SQL Injection ในช่องค้นหาเมนู |GET /api/menus?search=' OR '1'='1 | HTTP 200 พร้อมผลลัพธ์กรองปลอดภัย / ไม่หลุด Data ทั้งหมด|HTTP 200 ค้นหาด้วย Sanitized String ไม่เกิด SQL Injection | ✅|
+| TC-011 | Edge |Menu |อัปเดตจำนวนสินค้าในสต็อกจนเหลือ 0 (สินค้าหมด) | UT /api/menus/1 ด้วย {stock: 0}| HTTP 200 + สถานะสินค้าเปลี่ยนเป็น Out of Stock|HTTP 200 อัปเดตสต็อกเป็น 0 และปรับสถานะสินค้าสำเร็จ | ✅ |
 
-**✏️ สรุปผล:** ผ่าน ___ / ___ กรณี (___%)
+**✏️ สรุปผล:** ผ่าน 11/ 11 กรณี (100%)
 
 ---
 
@@ -172,18 +172,28 @@
 
 ### Postman Test Evidence
 > Rubric 1.4: สร้าง Collection + ตั้งค่า Environment + รันครบ + บันทึกผล + แนบรูป
-
+![alt text](image-2.png)
+![alt text](image-3.png)
+![alt text](image-4.png)
+![alt text](image-6.png)
+![alt text](image-9.png)
+![alt text](image-7.png)
+![alt text](image-8.png)
+![alt text](image-10.png)
+![alt text](image-11.png)
+![alt text](image-12.png)
+![alt text](image-13.png)
 #### ชื่อ Collection และไฟล์ที่ Export
 
-**✏️ แทนที่ `68030310` ด้วยรหัสจริง**
+**✏️ แทนที่ `รหัสนักศึกษา` ด้วยรหัสจริง**
 
 | รายการ | ค่าจริง |
 |--------|--------|
-| Collection Name | `RMS-[รหัสนักศึกษา]-TestSuite` |
-| ไฟล์ที่ Export ไปไว้ใน Repository | `tests/postman/RMS-[รหัสนักศึกษา]-TestSuite.json` |
+| Collection Name | `RMS-68030310-TestSuite` |
+| ไฟล์ที่ Export ไปไว้ใน Repository | `tests/postman/RMS-68030310-TestSuite.json` |
 | ไฟล์ Environment | `tests/postman/env.json` |
 
-> 📌 Repository มี Newman Collection 21 test cases ใน `tests/postman/` อยู่แล้ว  
+> 📌 Repository มี Newman Collection 21 test cases ใน `tests/postman/` อยู่แล้ว
 > นักศึกษาต้องสร้าง Collection ของตนเองที่ครอบคลุมกรณีทดสอบในส่วนที่ 2
 
 #### Environment Variables ที่ต้องตั้งค่าใน Postman
@@ -193,11 +203,11 @@
 | Variable | ค่าที่ตั้งจริง | ใช้สำหรับ |
 |----------|--------------|-----------|
 | `{{base_url}}` |https://restaurant-management-system-exam-2025-8lmw.onrender.com | Base URL ของ Backend API |
-| `{{token}}` | (JWT จาก Login ด้วย Cashier/Waiter) | Request ที่ต้องใช้ Token |
-| `{{admin_token}}` | (JWT จาก Login ด้วย Admin) | Request ที่ต้องการสิทธิ์ Admin |
+| `{{token}}` | eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywidXNlcm5hbWUiOiJ3YWl0ZXIxIiwicm9sZSI6IndhaXRlciIsIm5hbWUiOiJXYWl0ZXIgT25lIiwiaWF0IjoxNzkyNjY1NTA3LCJleHAiOjE3OTI2OTQzMDd9.5TslRaPCAlbdhjEghQABPdiY5Zo8HWKlefv-EZW5ol4 | Request ที่ต้องใช้ Token |
+| `{{admin_token}}` | eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbiBVc2VyIiwiaWF0IjoxNzkyNjYzOTAxLCJleHAiOjE3OTI2OTI3MDF9.uEJZql6IKpDW2XOjYsLsr0L07dkaimXVCcLVEQUxcX0 | Request ที่ต้องการสิทธิ์ Admin |
 
 #### pm.test Scripts ใน Collection
-> ⚠️ ทุก Request ใน Collection ต้องมี `pm.test(...)` ตรวจสอบ Response  
+> ⚠️ ทุก Request ใน Collection ต้องมี `pm.test(...)` ตรวจสอบ Response
 > ตัวอย่าง:
 > ```javascript
 > pm.test("Status code is 200", function () {
@@ -209,7 +219,7 @@
 > });
 > ```
 
-**✏️ ยืนยันว่าทุก Request มี pm.test แล้ว:** ☐ ใช่
+**✏️ ยืนยันว่าทุก Request มี pm.test แล้ว:** ✅ ใช่
 
 #### สรุปผลการรัน Postman (กรอกหลังรัน Collection Run)
 
@@ -217,21 +227,30 @@
 
 | Request Name | Method | Endpoint | Actual Result | Pass/Fail |
 |-------------|--------|----------|--------------|-----------|
-| | | | | ☐ |
-| | | | | ☐ |
-| | | | | ☐ |
-
-**✏️ สรุป:** ผ่าน ___ / ___ Request
+|TC-001 Login Success | POST |/api/auth/login |HTTP 200 + JWT Token | ✅ |
+|TC-002: Login ด้วย password |POST |/api/auth/login | HTTP 401 | ✅ |
+|TC-003: เรียก API โดยไม่มี JWT Token |GET |/api/orders | HTTP 401| ✅ |
+|TC-004 Exact Payment Amount|POST|/api/payments|HTTP 400: Order is not open|✅|
+|TC-005: Get All Menus|GET|/api/menu|HTTP 200 + รายการเมนู|✅|
+|TC-006 สร้างออเดอร์ใหม่สำเร็จ|POST|/api/orders|HTTP 201 + Order ID|✅|
+|TC-007: เพิ่มเมนูใหม่แต่ใส่ข้อมูลไม่ครบ|POST|/api/menu|HTTP 400|✅|
+|TC-008: สั่งอาหารในเมนูที่ไม่มีอยู่จริง|POST|/api/orders/4/items|HTTP 404|✅|
+|TC-009: Staff พยายามเข้าถึงรายงานยอดขาย|GET|/api/reports/sales|HTTP 403|✅|
+|TC-010: ทดสอบ SQL Injection ในช่องค้นหาเมนู|GET|/api/menu?Key=SQL Injection|HTTP 200 + รายการเมนู|✅|
+|TC-011: อัปเดตสต็อกเมนูให้เหลือ 0|PUT|/api/menu/1|   "HTTP 200 isAvailable": false,|✅|
+**✏️ สรุป:** ผ่าน 11 / 11 Request
 
 #### หลักฐานภาพหน้าจอ Postman
 
 **✏️ แทนที่ข้อความด้านล่างด้วยภาพจริง โดยใช้ syntax: `![คำอธิบาย](./tests/reports/ชื่อไฟล์.png)`**
 
 **รูปที่ 1 — Postman Collection และ Environment Variables (แสดง `base_url`, `token`, `admin_token` ครบ)**
+![alt text](image-23.png)
 
 `![Postman Collection + Env Vars](./tests/reports/postman-collection-env.png)`
 
 **รูปที่ 2 — ผล Postman Collection Run (แสดง Pass/Fail ทุก Request)**
+![alt text](image-14.png)
 
 `![Postman Run Result](./tests/reports/postman-run-result.png)`
 
@@ -257,22 +276,98 @@ newman run tests/postman/RMS-[รหัสนักศึกษา]-TestSuite.js
 **✏️ วาง output จาก Terminal ที่ได้หลังรัน Newman แทนที่ข้อความ template ด้านล่างทั้งหมด**
 
 ```
-[วาง Newman CLI output จริงที่นี่]
+MS-68030310-TestSuite
+
+→ TC-001 Login Success
+  POST https://restaurant-management-system-exam-2025-8lmw.onrender.com/api/auth/login [200 OK, 749B, 3.4s]
+  1⠄ SyntaxError in test-script
+
+→ TC-002: Login ด้วย password
+  POST https://restaurant-management-system-exam-2025-8lmw.onrender.com/api/auth/login [401 Unauthorized, 497B, 1090ms]
+
+→ TC-003: เรียก API โดยไม่มี JWT Token
+  GET https://restaurant-management-system-exam-2025-8lmw.onrender.com/api/orders [401 Unauthorized, 499B, 230ms]
+
+→ TC-004 Exact Payment Amount
+  POST https://restaurant-management-system-exam-2025-8lmw.onrender.com/api/payments [401 Unauthorized, 499B, 76ms]
+
+→ TC-005: Get All Menus
+  GET https://restaurant-management-system-exam-2025-8lmw.onrender.com/api/menu [401 Unauthorized, 499B, 170ms]
+  2. Status code is 200
+  3. Response returns array of menus
+
+→ TC-006 สร้างออเดอร์ใหม่สำเร็จ
+  POST https://restaurant-management-system-exam-2025-8lmw.onrender.com/api/orders [401 Unauthorized, 499B, 109ms]
+  4. Get menus returns 200
+  5. Response contains menu list
+
+→ TC-007: เพิ่มเมนูใหม่แต่ใส่ข้อมูลไม่ครบ
+  POST https://restaurant-management-system-exam-2025-8lmw.onrender.com/api/menu [401 Unauthorized, 499B, 320ms]
+
+→ TC-008: สั่งอาหารในเมนูที่ไม่มีอยู่จริง
+  POST https://restaurant-management-system-exam-2025-8lmw.onrender.com/api/orders/4/items [401 Unauthorized, 499B, 263ms]
+
+→ TC-009: Staff พยายามเข้าถึงรายงานยอดขาย
+  GET https://restaurant-management-system-exam-2025-8lmw.onrender.com/api/reports/sales [401 Unauthorized, 499B, 349ms]
+
+→ TC-010: ทดสอบ SQL Injection ในช่องค้นหาเมนู
+  GET https://restaurant-management-system-exam-2025-8lmw.onrender.com/api/menusearch=' OR '1'='1 [403 Forbidden, 221.79kB, 689ms]
+
+→ TC-011: อัปเดตสต็อกเมนูให้เหลือ 0
+  PUT https://restaurant-management-system-exam-2025-8lmw.onrender.com/api/menu/1 [401 Unauthorized, 499B, 112ms]
+
+→ Login Cashier
+  POST https://restaurant-management-system-exam-2025-8lmw.onrender.com/api/auth/login [200 OK, 763B, 850ms]
+  6⠄ SyntaxError in test-script
+
+→ Create Order - Setup
+  POST https://restaurant-management-system-exam-2025-8lmw.onrender.com/api/orders [401 Unauthorized, 499B, 235ms]
+
+→ Login Waiter
+  POST https://restaurant-management-system-exam-2025-8lmw.onrender.com/api/auth/login [200 OK, 756B, 862ms]
+  7⠄ SyntaxError in test-script
+
+→ Add Item - Setup
+  POST https://restaurant-management-system-exam-2025-8lmw.onrender.com/api/orders/2/items [401 Unauthorized, 499B, 236ms]
+
+→ Confirm Order - Setup
+  PUT https://restaurant-management-system-exam-2025-8lmw.onrender.com/api/orders/2/confirm [401 Unauthorized, 499B, 77ms]
+
+→ TC-008 Create Open Order
+  GET  [errored]
+     runtime:extensions~request: request url is empty
+
+→ TC-010 SQL Injection Search Sanitization
+  GET https://restaurant-management-system-exam-2025-8lmw.onrender.com/api/menu?search=Pad Thai [401 Unauthorized, 499B, 344ms]
+
+┌─────────────────────────┬────────────────────┬───────────────────┐
+│                         │           executed │            failed │
+├─────────────────────────┼────────────────────┼───────────────────┤
+│              iterations │                  1 │                 0 │
+├─────────────────────────┼────────────────────┼───────────────────┤
+│                requests │                 18 │                 1 │
+├─────────────────────────┼────────────────────┼───────────────────┤
+│            test-scripts │                  6 │                 3 │
+├─────────────────────────┼────────────────────┼───────────────────┤
+│      prerequest-scripts │                  0 │                 0 │
+├─────────────────────────┼────────────────────┼───────────────────┤
+│              assertions │                  4 │                 4 │
+├─────────────────────────┴────────────────────┴───────────────────┤
+│ total run duration: 11s
 ```
 
 **✏️ กรอกตัวเลขจริงจาก Newman output:**
 
 | Metric | ค่าจริง |
 |--------|--------|
-| Total Requests | |
-| Tests Passed | |
-| Tests Failed | |
-| Pass Rate | % |
+| Total Requests | 18|
+| Tests Passed | 0|
+| Tests Failed |4 |
+| Pass Rate | 0% |
 
 **รูปที่ 3 — ผล Newman CLI (แสดง Pass/Fail summary)**
 
-`![Newman Run Result](./tests/reports/newman-cli-result.png)`
-
+`![alt text](image-15.png)
 ---
 
 ### Automated Testing via CI Pipeline
@@ -282,9 +377,9 @@ newman run tests/postman/RMS-[รหัสนักศึกษา]-TestSuite.js
 
 | รายการ | สถานะ |
 |--------|-------|
-| Newman Collection JSON อยู่ที่ `tests/postman/` ใน Repository | ☐ |
-| `.github/workflows/cicd.yml` มี step ติดตั้งและรัน Newman | ☐ |
-| GitHub Actions Pipeline รันสำเร็จ (สีเขียว) | ☐ |
+| Newman Collection JSON อยู่ที่ `tests/postman/` ใน Repository | ✅  |
+| `.github/workflows/cicd.yml` มี step ติดตั้งและรัน Newman | ✅  |
+| GitHub Actions Pipeline รันสำเร็จ (สีเขียว) |   |
 | Newman Pass Rate บันทึกอยู่ใน Pipeline log | ☐ |
 
 **✏️ Newman Pass Rate จาก CI/CD:** ___ / ___ (___%)
@@ -309,22 +404,27 @@ cd backend && npm audit --audit-level=moderate
 
 | Severity | จำนวน |
 |----------|-------|
-| Critical | 0|
-| High | 0|
-| Medium |0 |
-| Low |0 |
-| **รวม** | 0|
+| Critical | 1|
+| High | 5|
+| Medium |6 |
+| Low |1 |
+| **รวม** | 13|
 
 **✏️ กรอกรายละเอียด Dependency ที่มีช่องโหว่ระดับ High ขึ้นไป (ถ้าไม่มีให้ระบุ "ไม่พบช่องโหว่")**
 
 | Package | CVE ID | Severity | เวอร์ชันที่มีปัญหา | เวอร์ชันที่ปลอดภัย | สถานะการแก้ไข |
-|---------|--------|----------|--------------------|--------------------|--------------| 
-|ไม่มีช่องโหว่ | | | | | |
-
+|---------|--------|----------|--------------------|--------------------|--------------|
+|form-data	|GHSA-hmw2-7cc7-3qxx|	High	| 4.0.0–4.0.5	|ต้องตรวจสอบเวอร์ชันที่แก้ไขแล้ว	|รอแก้ไข
+nanoid|	GHSA-28wg-ghj8-5hjv, GHSA-2v37-7h3g-55p8|	High|	≤ 3.3.17|	ต้องตรวจสอบเวอร์ชันที่แก้ไขแล้ว|	รอแก้ไข
+postcss|	GHSA-fxqj-rqcc-2cmp, GHSA-r28c-9q8g-f849|	High|	≤ 8.5.22|	ต้องตรวจสอบเวอร์ชันที่แก้ไขแล้ว	รอแก้ไข
+proxy-addr|	GHSA-jqcg-44mw-7w3h|	Critical	|1.1.0–2.0.7|	ต้องตรวจสอบเวอร์ชันที่แก้ไขแล้ว	|รอแก้ไข
+source-map-js|	GHSA-68fv-2mgg-jv7q|	High|	1.0.0–1.2.1|	ต้องตรวจสอบเวอร์ชันที่แก้ไขแล้ว|	รอแก้ไข
+vite	|หลายรายการ ดูรายละเอียดด้านล่าง|	High|	8.0.0–8.1.5	|ต้องตรวจสอบเวอร์ชันที่แก้ไขแล้ว|	รอแก้ไข
 **รูปที่ 5 — ผล npm audit Backend**
 
-`![alt text](image.png)`
-
+`![alt text](image-16.png)
+![alt text](image-17.png)
+![alt text](image-18.png)
 ---
 
 ### Frontend Security Scan
@@ -345,11 +445,14 @@ cd frontend && npm audit --audit-level=moderate
 
 **รูปที่ 6 — ผล npm audit Frontend**
 
-`![alt text](image-1.png)`
+![alt text](image-19.png)
+![alt text](image-20.png)
+![alt text](image-21.png)
+![alt text](image-22.png)
 
 ### Security Scan ใน CI Pipeline (Rubric 1.7 ข้อ 4)
 
-**✏️ ยืนยันว่าได้เพิ่ม `npm audit --audit-level=high` ใน `.github/workflows/cicd.yml` แล้ว:** ✅ใช่
+**✏️ ยืนยันว่าได้เพิ่ม `npm audit --audit-level=high` ใน `.github/workflows/cicd.yml` แล้ว:** ✅ ใช่
 
 **รูปที่ 7 — GitHub Actions แสดง npm audit step รันสำเร็จ**
 
@@ -374,15 +477,15 @@ cd frontend && npm audit --audit-level=moderate
 
 #### Steps to Reproduce
 **✏️ ระบุขั้นตอนที่ทำให้เกิด Bug ซ้ำได้ชัดเจน**
-1. 
-2. 
-3. 
+1.
+2.
+3.
 
 #### Expected Result
-> ✏️ 
+> ✏️
 
 #### Actual Result
-> ✏️ 
+> ✏️
 
 #### Evidence
 
@@ -404,15 +507,15 @@ cd frontend && npm audit --audit-level=moderate
 
 #### Steps to Reproduce
 **✏️ ระบุขั้นตอนที่ทำให้เกิด Bug ซ้ำได้ชัดเจน**
-1. 
-2. 
-3. 
+1.
+2.
+3.
 
 #### Expected Result
-> ✏️ 
+> ✏️
 
 #### Actual Result
-> ✏️ 
+> ✏️
 
 #### Evidence
 
@@ -431,10 +534,10 @@ cd frontend && npm audit --audit-level=moderate
 
 | รายการ | เวอร์ชันที่ต้องการ |
 |--------|------------------|
-| Node.js | 22 LTS |
-| Git | ล่าสุด |
-| Docker | ล่าสุด |
-| Docker Compose | v2+ |
+| Node.js | v24.14.0 |
+| Git | git version 2.53.0.windows.2 |
+| Docker | Docker version 29.2.1, build a5c7197ล่าสุด |
+| Docker Compose | version v5.0.2 |
 
 ---
 
@@ -475,8 +578,8 @@ cd frontend && npm install && npm run dev
 
 | Service | Port ที่รันจริง | ค่า CORS_ORIGIN ที่ตั้ง | ค่า VITE_API_URL ที่ตั้ง |
 |---------|---------------|------------------------|------------------------|
-| Backend API | | | — |
-| Frontend | | — | |
+| Backend API | 3001|http://localhost:5173 | — |
+| Frontend |5173 | — | /api|
 
 #### ผล Smoke Test — On-Premises
 
@@ -484,17 +587,17 @@ cd frontend && npm install && npm run dev
 
 | ทดสอบ | URL | ผลลัพธ์ที่คาดหวัง | ผ่าน/ไม่ผ่าน |
 |-------|-----|-----------------|-------------|
-| Backend Health Check | `http://localhost:[port]/api/health` | `{"status":"ok"}` | ☐ |
-| Frontend Login | `http://localhost:5173` | หน้า Login แสดงผลสำเร็จ | ☐ |
+| Backend Health Check | `http://localhost:[port]/api/health` | `{"status":"ok"}` | ✅ |
+| Frontend Login | `http://localhost:5173` | หน้า Login แสดงผลสำเร็จ | ✅|
 
 #### หลักฐาน On-Premises
 
 **รูปที่ 8 — Backend Health Check (`/api/health` ตอบ `{"status":"ok"}`)**
-
+![alt text](image-24.png)
 `![On-Premises Backend Health](./tests/reports/onprem-backend-health.png)`
 
 **รูปที่ 9 — Frontend Login สำเร็จ**
-
+![alt text](image-25.png)
 `![On-Premises Frontend Login](./tests/reports/onprem-frontend-login.png)`
 
 ---
@@ -506,10 +609,10 @@ cd frontend && npm install && npm run dev
 
 **✏️ ทำเครื่องหมาย ✅ เมื่อแก้ไขเสร็จแล้ว**
 
-- [ ] เพิ่ม Environment Variables ครบถ้วน (`DATABASE_URL`, `JWT_SECRET`, `CORS_ORIGIN`, `VITE_API_URL`)
-- [ ] กำหนด Port Mapping: backend → 3001, frontend → 80
-- [ ] เพิ่ม Health Check สำหรับ backend service
-- [ ] กำหนด `depends_on` ให้ frontend รอ backend พร้อมก่อน
+- [✅ ] เพิ่ม Environment Variables ครบถ้วน (`DATABASE_URL`, `JWT_SECRET`, `CORS_ORIGIN`, `VITE_API_URL`)
+- [✅ ] กำหนด Port Mapping: backend → 3001, frontend → 80
+- [✅ ] เพิ่ม Health Check สำหรับ backend service
+- [✅ ] กำหนด `depends_on` ให้ frontend รอ backend พร้อมก่อน
 
 #### Environment Variables ที่ตั้งค่าจริงใน `docker-compose.yml` (Rubric 2.2 ข้อ 2)
 
@@ -517,11 +620,11 @@ cd frontend && npm install && npm run dev
 
 | Variable | Service | ค่าที่ตั้งจริง |
 |----------|---------|--------------|
-| `DATABASE_URL` | backend | |
+| `DATABASE_URL` | backend |	postgresql://rms_staging_user:***@host.docker.internal:5432/rms_staging?schema=public |
 | `JWT_SECRET` | backend | (ตั้งค่าแล้ว — ไม่ระบุค่าจริงเพื่อความปลอดภัย) |
-| `CORS_ORIGIN` | backend | |
-| `NODE_ENV` | backend | |
-| `VITE_API_URL` | frontend | |
+| `CORS_ORIGIN` | backend |http://localhost |
+| `NODE_ENV` | backend | production|
+| `VITE_API_URL` | frontend |/api |
 
 #### Multi-stage Build (Rubric 2.5 ข้อ 2)
 
@@ -529,12 +632,12 @@ cd frontend && npm install && npm run dev
 
 | Service | มี Multi-stage Build | Stage ที่ใช้ (เช่น builder → runner) |
 |---------|--------------------|------------------------------------|
-| Backend | ☐ มี / ☐ ไม่มี | |
-| Frontend | ☐ มี / ☐ ไม่มี | |
+| Backend |  ✅ มี / ☐ ไม่มี |deps → builder → runner |
+| Frontend | ✅ มี / ☐ ไม่มี | builder → nginx (runtime)|
 
 **รูปที่ 10 — Dockerfile แสดง Multi-stage build**
 
-`![Multi-stage Dockerfile](./tests/reports/dockerfile-multistage.png)`
+![alt text](image-30.png)
 
 #### Volume Mapping (Rubric 2.5 ข้อ 4)
 
@@ -542,7 +645,7 @@ cd frontend && npm install && npm run dev
 
 | Volume Name / Path | Host Path | Container Path | วัตถุประสงค์ |
 |-------------------|-----------|----------------|-------------|
-| | | | |
+|ไม่มี Volume mapping |- |- | 	ไม่มีการกำหนด Volume สำหรับเชื่อมต่อพื้นที่จัดเก็บข้อมูลระหว่าง Host และ Container|
 
 #### Network Configuration (Rubric 2.5 ข้อ 5)
 
@@ -550,7 +653,7 @@ cd frontend && npm install && npm run dev
 
 | Network Name | Driver | Services ที่อยู่ใน Network นี้ |
 |-------------|--------|-------------------------------|
-| | | |
+|rms-network | bridge|backend, frontend |
 
 #### คำสั่งรัน Staging
 
@@ -564,14 +667,14 @@ docker compose up --build
 
 | ทดสอบ | URL | ผลลัพธ์ที่คาดหวัง | ผ่าน/ไม่ผ่าน |
 |-------|-----|-----------------|-------------|
-| Backend Health Check | `http://localhost:3001/api/health` | `{"status":"ok"}` | ☐ |
-| Frontend | `http://localhost:80` | หน้า Login แสดงผลสำเร็จ | ☐ |
+| Backend Health Check | `http://localhost:3001/api/health` | `{"status":"ok"}` | ✅|
+| Frontend | `http://localhost:80` | หน้า Login แสดงผลสำเร็จ | ✅ |
 
 #### หลักฐาน Staging
 
 **รูปที่ 11 — `docker compose ps` แสดงทุก Container สถานะ `running`**
 
-`![Docker Compose PS](./tests/reports/staging-docker-ps.png)`
+![alt text](image-26.png)
 
 ---
 
@@ -584,7 +687,9 @@ docker compose up --build
 3. นำไปใช้เป็นค่า `DATABASE_URL` ใน Backend
 
 **✏️ Connection String ที่ใช้จริง (เบลอ password ก่อนบันทึก):**
-
+![alt text](image-27.png)
+![alt text](image-28.png)
+![alt text](image-29.png)
 `postgresql://[user]:***@[host].neon.tech/[db]?sslmode=require`
 
 ---
@@ -621,11 +726,11 @@ Build Command:  npm run build
 | Variable | Service | ค่าที่ตั้งจริงบน Cloud |
 |----------|---------|----------------------|
 | `PORT` | Backend (Render) | `10000` |
-| `DATABASE_URL` | Backend (Render) | |
-| `JWT_SECRET` | Backend (Render) | (ตั้งค่าแล้ว — ไม่ระบุ) |
-| `CORS_ORIGIN` | Backend (Render) | `https://[ชื่อ app ของตนเอง].vercel.app` |
+| `DATABASE_URL` | Backend (Render) |มีแล้ว |
+| `JWT_SECRET` | Backend (Render) | ตั้งค่าแล้ว — ไม่ระบุ |
+| `CORS_ORIGIN` | Backend (Render) | https://restaurant-management-system-exam-2-ebon.vercel.app |
 | `NODE_ENV` | Backend (Render) | `production` |
-| `VITE_API_URL` | Frontend (Vercel) | `https://[ชื่อ api ของตนเอง].onrender.com` |
+| `VITE_API_URL` | Frontend (Vercel) | https://restaurant-management-system-exam-2025-8lmw.onrender.com |
 
 ---
 
@@ -636,29 +741,27 @@ Build Command:  npm run build
 
 | # | Feature | ขั้นตอนทดสอบ | ผลลัพธ์ที่คาดหวัง | ผ่าน/ไม่ผ่าน |
 |---|---------|------------|-----------------|-------------|
-| 1 | Health Check | GET `/api/health` | `{"status":"ok"}` | ☐ |
-| 2 | Login | Login ด้วย admin บน Frontend URL | เข้าระบบสำเร็จ | ☐ |
-| 3 | Open Order & Add Item | เปิดโต๊ะ → เพิ่มสินค้า → Confirm | ออเดอร์ถูกบันทึก | ☐ |
-| 4 | Payment | ชำระเงิน → ตรวจสอบ change | คำนวณเงินทอนถูกต้อง | ☐ |
+| 1 | Health Check | GET `/api/health` | `{"status":"ok"}` | ✅ |
+| 2 | Login | Login ด้วย admin บน Frontend URL | เข้าระบบสำเร็จ | ✅ |
+| 3 | Open Order & Add Item | เปิดโต๊ะ → เพิ่มสินค้า → Confirm | ออเดอร์ถูกบันทึก | ✅  |
+| 4 | Payment | ชำระเงิน → ตรวจสอบ change | คำนวณเงินทอนถูกต้อง | ✅ |
 
-**✏️ Production Smoke Test ผ่าน:** ___ / 4 รายการ
+**✏️ Production Smoke Test ผ่าน:** 4 / 4 รายการ
 
 **รูปที่ 12 — Smoke Test Feature 1: Health Check**
 
-`![Smoke Test Health](./tests/reports/smoke-1-health.png)`
+![alt text](image-31.png)
 
 **รูปที่ 13 — Smoke Test Feature 2: Login**
-
-`![Smoke Test Login](./tests/reports/smoke-2-login.png)`
+![alt text](image-32.png)
 
 **รูปที่ 14 — Smoke Test Feature 3: Open Order**
 
-`![Smoke Test Order](./tests/reports/smoke-3-order.png)`
+![alt text](image-33.png)
 
 **รูปที่ 15 — Smoke Test Feature 4: Payment**
 
-`![Smoke Test Payment](./tests/reports/smoke-4-payment.png)`
-
+![alt text](image-34.png)
 ---
 
 ## CI/CD Pipeline + Newman Pass Rate
@@ -669,10 +772,10 @@ Build Command:  npm run build
 
 **✏️ ทำเครื่องหมาย ✅ เมื่อแก้ไขและทดสอบ Pipeline สำเร็จแล้ว**
 
-- [ ] เพิ่ม trigger เมื่อมีการ push ไปที่สาขาหลัก (`main` / `master`)
-- [ ] เพิ่ม `actions/setup-node` สำหรับ Node.js version 22
-- [ ] เพิ่ม step รัน Unit Test ของ Backend (`npm test`)
-- [ ] เพิ่ม step ติดตั้งและรัน Newman
+- [✅ ] เพิ่ม trigger เมื่อมีการ push ไปที่สาขาหลัก (`main` / `master`)
+- [ ✅] เพิ่ม `actions/setup-node` สำหรับ Node.js version 22
+- [✅ ] เพิ่ม step รัน Unit Test ของ Backend (`npm test`)
+- [ ✅] เพิ่ม step ติดตั้งและรัน Newman
 - [ ] เพิ่ม step `npm audit --audit-level=high` ทั้ง backend และ frontend
 
 ### Newman Pass Rate จาก CI/CD Pipeline
